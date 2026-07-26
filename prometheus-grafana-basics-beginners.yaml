@@ -1,0 +1,256 @@
+title: "Grafana & Prometheus Fundamentals for DevOps and SRE"
+
+training:
+
+  introduction: |
+    Today, almost every modern application runs on cloud platforms, Kubernetes,
+    virtual machines, containers, or microservices. These environments are highly
+    dynamic, and problems can happen at any time.
+
+    As a DevOps Engineer or Site Reliability Engineer (SRE), you cannot manually
+    log in to hundreds of servers every few minutes to check whether everything
+    is healthy.
+
+    This is where observability becomes essential.
+
+  what_is_observability: |
+    Observability is the ability to understand the health and behaviour of a system
+    by looking at the data it generates.
+
+    Instead of guessing why an application is slow or unavailable, observability
+    helps engineers quickly identify what is happening and where the problem exists.
+
+    Modern observability is generally built around three pillars:
+
+      - Metrics
+      - Logs
+      - Traces
+
+    Today we will focus only on Metrics.
+
+  what_are_metrics: |
+    Metrics are numerical values collected continuously over time.
+
+    Examples include:
+
+      - CPU Utilisation
+      - Memory Usage
+      - Disk Usage
+      - Network Traffic
+      - HTTP Request Count
+      - Error Rate
+      - Response Time
+
+    Metrics allow engineers to monitor trends instead of checking systems manually.
+
+  what_is_prometheus: |
+    Prometheus is one of the world's most popular open-source monitoring systems.
+
+    Its primary job is to collect and store metrics from applications,
+    Kubernetes clusters, servers, and many other systems.
+
+    Think of Prometheus as a database that continuously collects numerical
+    health information from your infrastructure.
+
+    Prometheus answers questions like:
+
+      - Is CPU increasing?
+      - Is memory running out?
+      - Is the application responding?
+      - How many requests are failing?
+      - Which service is unhealthy?
+
+  what_is_grafana: |
+    Grafana is a visualization platform.
+
+    While Prometheus stores the metrics, Grafana converts those metrics into
+    beautiful dashboards and graphs that engineers can easily understand.
+
+    Instead of reading thousands of numbers, engineers can immediately identify
+    trends and problems through visual dashboards.
+
+  simple_analogy: |
+    A simple way to remember them:
+
+      Prometheus = Collects and Stores Metrics
+
+      Grafana = Displays Metrics in Dashboards
+
+    One collects the data.
+    The other presents the data.
+
+  why_every_company_uses_them: |
+    Modern companies may run hundreds or even thousands of servers,
+    containers and applications.
+
+    Without monitoring, engineers would only know about problems after customers
+    start complaining.
+
+    With Prometheus and Grafana, engineers can detect issues much earlier.
+
+    This helps organisations:
+
+      - Improve application reliability
+      - Reduce downtime
+      - Detect failures quickly
+      - Improve customer experience
+      - Troubleshoot incidents faster
+      - Make better operational decisions
+
+  real_world_examples: |
+    Example 1:
+
+    CPU utilisation suddenly becomes very high.
+
+    Grafana dashboard immediately shows the spike.
+
+    Engineers investigate before the application crashes.
+
+    --------------------------------------------------
+
+    Example 2:
+
+    Application response time gradually increases.
+
+    Grafana trend shows latency rising over the last hour.
+
+    Engineers identify the issue before customers notice.
+
+    --------------------------------------------------
+
+    Example 3:
+
+    Error rate suddenly jumps from 0% to 15%.
+
+    Dashboard highlights the increase immediately.
+
+    Engineers start investigating the root cause.
+
+  where_they_are_used: |
+    Prometheus and Grafana are widely used for monitoring:
+
+      - Kubernetes
+      - Docker Containers
+      - Linux Servers
+      - AWS Infrastructure
+      - Azure
+      - Google Cloud
+      - Databases
+      - Java Applications
+      - Python Applications
+      - Node.js Applications
+      - Microservices
+      - APIs
+
+  why_devops_and_sres_love_them: |
+    DevOps Engineers use these tools to monitor infrastructure.
+
+    Site Reliability Engineers use them to ensure services remain healthy,
+    reliable and available.
+
+    During production incidents, dashboards often become the first place
+    engineers check to understand what is happening.
+
+  learning_path: |
+    If you are completely new, focus on understanding these concepts first:
+
+      1. What are Metrics?
+      2. What is Observability?
+      3. What is Prometheus?
+      4. What is Grafana?
+      5. How do they work together?
+      6. Why monitoring is important?
+
+    Once these fundamentals are clear, learning advanced monitoring becomes much easier.
+
+  summary: |
+    Key Takeaways:
+
+      ✓ Observability helps engineers understand system health.
+
+      ✓ Metrics are numerical measurements collected over time.
+
+      ✓ Prometheus collects and stores metrics.
+
+      ✓ Grafana visualizes those metrics using dashboards.
+
+      ✓ Together they help DevOps and SRE teams detect, investigate and resolve issues quickly.
+
+      ✓ These tools are considered industry standards for monitoring cloud-native applications.
+
+  next_step: |
+    This session covered only the fundamentals.
+
+    If you want to learn Prometheus and Grafana in depth with production-oriented
+    examples, Kubernetes integration, alerting, dashboards, PromQL, architecture, real-world troubleshooting, 
+    and complete hands-on demonstrations, you can explore my YouTube Membership, where I cover these topics step by step
+    using practical examples from real DevOps and SRE environments.
+
+
+
+Installing {Prometheus} and {Grafana} using Docker on AWS EC2 Instance:
+In this script, we first create a dedicated Docker network so that Prometheus and Grafana can communicate with each other using their container names 
+instead of IP addresses.
+Next, we create a basic Prometheus configuration file that tells Prometheus what metrics it should collect and how frequently it should scrape them.
+After that, we start the Prometheus container and mount our configuration file inside it so Prometheus uses our custom settings.
+The script then creates a Grafana provisioning file. This file automatically configures Prometheus as Grafana's default data source, so we don't have to add it manually 
+after logging in.
+Next, the Grafana container is started with the default username and password set to "admin" for this demo environment.
+Both containers are connected to the same Docker network, which allows Grafana to reach Prometheus using the hostname "prometheus" instead of a public IP address.
+We also use the restart policy "unless-stopped", which means the containers will automatically start again if the EC2 instance is rebooted.
+Finally, once the script completes, we can access Prometheus on port 9090 and Grafana on port 3000 from our web browser, and Grafana is already connected to Prometheus 
+and ready to build dashboards.
+
+Metrics Collection and Visualization:
+Why does Prometheus scrape localhost:9090?
+
+Because Prometheus exposes its own metrics on the /metrics endpoint.
+
+When Prometheus starts, it automatically publishes internal metrics such as:
+
+How many targets are being scraped
+How long each scrape takes
+Memory usage
+CPU usage
+Number of active time series
+Storage information
+Query statistics
+
+These metrics are available at: http://localhost:9090/metrics
+
+In this demo, I have also configured cAdvisor. cAdvisor stands for Container Advisor, and it is an open source tool developed by Google.
+Its job is to monitor running Docker containers and collect metrics such as CPU usage, memory usage, network traffic, and filesystem usage.
+Our Apache web server does not expose Prometheus metrics by default, so Prometheus cannot collect container-level metrics directly from it.
+Instead, Prometheus scrapes the metrics exposed by cAdvisor, and cAdvisor gathers those metrics from the Docker containers running on the host.
+In simple terms, cAdvisor acts as a bridge between Docker containers and Prometheus.
+Once Prometheus stores these metrics, Grafana can read them from Prometheus and display them as dashboards and graphs.
+This is one of the simplest ways to monitor Docker containers without making any changes to the application itself.
+
+Our application serves the web pages, cAdvisor collects the container metrics, Prometheus stores those metrics, and Grafana visualizes them.
+
+docker run -d \
+  --name cadvisor \
+  --network monitoring \
+  --restart unless-stopped \
+  -p 8081:8080 \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  gcr.io/cadvisor/cadvisor:v0.49.1
+
+  This command starts cAdvisor as a Docker container in the background.
+
+  Apache web server container command: docker run -d -p 8080:80 bhavukm/demo777:v1
+
+We give the container a name called "cadvisor" and connect it to the "monitoring" Docker network so that Prometheus can communicate with it.
+The restart policy ensures that cAdvisor automatically starts again if the server is rebooted.
+We map port 8081 on the EC2 instance to port 8080 inside the container so we can access the cAdvisor web interface.
+The volume mounts give cAdvisor read-only access to important Linux and Docker directories, allowing it to collect CPU, memory, network, and storage metrics 
+from all running containers.
+Finally, we use the official cAdvisor Docker image to run the application.
+
+container_cpu_usage_seconds_total 
+container_memory_usage_bytes
+container_network_receive_bytes_total
+container_fs_usage_bytes
