@@ -216,7 +216,7 @@ Number of active time series
 Storage information
 Query statistics
 
-These metrics are available at: http://localhost:9090/metrics
+These metrics are available at: http://<EC2-Public-IP:9090/metrics
 
 In this demo, I have also configured cAdvisor. cAdvisor stands for Container Advisor, and it is an open source tool developed by Google.
 Its job is to monitor running Docker containers and collect metrics such as CPU usage, memory usage, network traffic, and filesystem usage.
