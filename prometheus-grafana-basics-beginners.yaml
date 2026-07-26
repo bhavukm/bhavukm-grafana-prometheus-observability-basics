@@ -159,11 +159,11 @@ training:
       3. What is Prometheus?
       4. What is Grafana?
       5. How do they work together?
-      6. Why monitoring is important?
+      6. Why is monitoring important?
 
     Once these fundamentals are clear, learning advanced monitoring becomes much easier.
 
-  summary: |
+  Summary: |
     Key Takeaways:
 
       ✓ Observability helps engineers understand system health.
@@ -200,6 +200,59 @@ Both containers are connected to the same Docker network, which allows Grafana t
 We also use the restart policy "unless-stopped", which means the containers will automatically start again if the EC2 instance is rebooted.
 Finally, once the script completes, we can access Prometheus on port 9090 and Grafana on port 3000 from our web browser, and Grafana is already connected to Prometheus 
 and ready to build dashboards.
+
+Hands-On Demo:
+Provision an Ubuntu-based VM. In my case, I am using an AWS EC2 Ubuntu Instance. SSH to it. 
+Install Docker:https://docs.docker.com/engine/install/ubuntu/
+Provide Docker permissions to the Ubuntu user: usermod -aG docker ubuntu
+Log out and log back in
+Create the script file:
+nano install-prometheus-grafana.sh
+Paste, save, & quit the content from the attached script file and replace the public IP of EC2 Instance 44.198.54.87 with your EC2 IP:
+Script file name: install-prometheus-grafana.sh
+
+Run commands: 
+chmod +x install-prometheus-grafana.sh
+./install-prometheus-grafana.sh
+docker ps # To check Grafana and Prometheus containers
+
+Create the Apache web server container: docker run -d -p 8080:80 bhavukm/demo777:v1
+Verify: docker ps
+
+Now, create the cAdvisor Docker container:
+docker run -d \
+  --name cadvisor \
+  --network monitoring \
+  --restart unless-stopped \
+  -p 8081:8080 \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  gcr.io/cadvisor/cadvisor:v0.49.1
+
+  Verify: docker ps # You should see a total of 4 containers now
+
+  Generate application metrics:
+
+  while true
+do
+    curl http://EC2-Public-IP:8080 >/dev/null
+    sleep 0.2
+done
+
+  Access Prometheus: http://EC2-Public-IP:9090
+  Access Grafana: http://EC2-Public-IP:3000
+  
+  Login:
+  Username: admin
+  Password: admin
+
+  Go to the Explore option, run the following PromQL queries:
+container_cpu_usage_seconds_total 
+container_memory_usage_bytes
+container_network_receive_bytes_total
+container_fs_usage_bytes
 
 Metrics Collection and Visualization:
 Why does Prometheus scrape localhost:9090?
@@ -241,16 +294,9 @@ docker run -d \
 
   This command starts cAdvisor as a Docker container in the background.
 
-  Apache web server container command: docker run -d -p 8080:80 bhavukm/demo777:v1
-
 We give the container a name called "cadvisor" and connect it to the "monitoring" Docker network so that Prometheus can communicate with it.
 The restart policy ensures that cAdvisor automatically starts again if the server is rebooted.
 We map port 8081 on the EC2 instance to port 8080 inside the container so we can access the cAdvisor web interface.
 The volume mounts give cAdvisor read-only access to important Linux and Docker directories, allowing it to collect CPU, memory, network, and storage metrics 
 from all running containers.
 Finally, we use the official cAdvisor Docker image to run the application.
-
-container_cpu_usage_seconds_total 
-container_memory_usage_bytes
-container_network_receive_bytes_total
-container_fs_usage_bytes
